@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h2 class="znall"></h2>
+  <select name="" id="" class="select"></select>
+  <select name="" id="" class="sn"></select>
+  </br>
+  <p class="sum"></p>
+  <ul class="zn"></ul>
+  <script>
+      var xhr=new XMLHttpRequest();
+xhr.open('get','https://work1999.kcg.gov.tw/open1999/ServiceRequestsQuery.asmx/ServiceRequestsQuery',true);
+xhr.send();
+console.log(xhr.responseText);
+xhr.onload=function(){
+  var data=JSON.parse(xhr.responseText);
+  var str='';
+  var sn=document.querySelector('.sn');
+  var znall=document.querySelector('.znall');
+  var zn=document.querySelector('.zn');
+  var type=0;
+  var total={};
+  var total2={};
+  var select=document.querySelector('.select');
+  var sum=document.querySelector('.sum');
+  for(var i=0;i<data.length;i++){
+    var content=data[i].ZipName_;
+    var content2=data[i].StatusName_;
+    if(total[content]==undefined){
+      type+=1;
+      total[content]=1;
+    }else{
+      total[content]+=1;
+    };
+    if(total2[content2]==undefined){
+      total2[content2]=1;
+    }else{
+      total2[content2]+=1;
+    };
+  }
+  
+  var str2='';
+  for(var all in total){
+    str2+="<option>"+all+"</option>";
+  }
+  select.innerHTML=str2;
+  
+  var str4='';
+  for(var all2 in total2){
+    str4+="<option>"+all2+"</option>";
+  }
+  sn.innerHTML=str4;
+  
+  var str1='共有'+type+'區';
+  znall.innerHTML=str1;
+  for(var item in total){
+    str+='<li>'+item+':'+total[item]+'筆資料</li>';
+  }
+  zn.innerHTML=str;
+  sn.addEventListener('change',function(e){
+    var _sn=sn.value;
+    var _select=select.value;
+    var str5='';
+    var count=0;
+    for(var i=0;i<data.length;i++){
+      if(data[i].ZipName_==_select&&data[i].StatusName_==_sn){
+        str5+="<li>"+data[i].address_+"</li>";
+        count+=1;
+      }
+    }
+    zn.innerHTML=str5;
+    sum.innerHTML='有'+count+'筆';
+  })
+  select.addEventListener('change',function(e){
+    var _select=select.value;
+    var _sn=sn.value;
+    var str3="";
+    var count=0;
+    for(var j=0;j<data.length;j++){
+        if(data[j].ZipName_==_select){
+          count+=1;
+          str3+="<li>"+data[j].address_+"</li>";
+        }
+    }
+    sum.innerHTML='有'+count+'筆';
+    zn.innerHTML=str3;
+  })
+}
+  </script>
+  
+  
+  
+</body>
+</html>
